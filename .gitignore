@@ -1,0 +1,9 @@
+# large regenerable binaries (see README for reproduction)
+data/*.bin
+data/*.bin.rep
+data/fam/
+data/*.log
+*.o
+src/ulam
+src/ulam2
+.DS_Store

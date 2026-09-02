@@ -1,0 +1,67 @@
+<script>
+/* ---------- Figure 7 + family table ---------- */
+(function(){
+  const all = D.families||[];
+  const isDeg = r => !r.periodic && Math.abs((r.lam||0)-3.141593)<1e-4;
+  const err = all.filter(r=>!r.periodic && !isDeg(r) && (r.H_g||0)>=2);
+  const qreg = all.filter(r=>!r.periodic && !isDeg(r) && (r.H_g||0)>0 && (r.H_g||0)<2);
+  const fam = err;
+  const reg = all.filter(r=>r.periodic);
+  // table
+  const tb = document.getElementById('famtable');
+  let html = '<table><thead><tr><th>(u,v)</th><th class="num">density</th><th class="num">λ</th>'
+    +'<th class="num">|S|</th><th class="num">H(g) bits</th><th class="num">I(g;θ)/H(g)</th>'
+    +'<th class="num">screening</th><th class="num">window</th></tr></thead><tbody>';
+  fam.sort((a,b)=>a.file.localeCompare(b.file, undefined, {numeric:true}));
+  fam.forEach(r=>{
+    const uv = r.file.replace('u','(').replace('_',',').replace('.bin',')');
+    html += `<tr><td class="mono">${uv}</td><td class="num">${r.density.toFixed(4)}</td>`
+      +`<td class="num">${r.lam.toFixed(7)}</td><td class="num">${r.S.toFixed(3)}</td>`
+      +`<td class="num">${r.H_g.toFixed(2)}</td><td class="num">${(100*r.I_frac).toFixed(1)}%</td>`
+      +`<td class="num">${(100*r.screen).toFixed(1)}%</td><td class="num">${(100*r.window_frac).toFixed(1)}%</td></tr>`;
+  });
+  html += '</tbody></table>';
+  tb.innerHTML = html;
+  const su = document.getElementById('famsummary');
+  const ifr = fam.map(r=>r.I_frac), scr = fam.map(r=>r.screen);
+  const mean = a=>a.reduce((x,y)=>x+y,0)/a.length;
+  const sd = a=>{const m=mean(a); return Math.sqrt(mean(a.map(v=>(v-m)*(v-m))));};
+  const wins = err.concat(qreg).map(r=>r.window_frac).filter(v=>v>0.1);
+  su.textContent = `Table: the ${fam.length} fully erratic families (of ${all.length} generated to 4×10⁶; `
+    +`${reg.length} detected-periodic, ${all.filter(isDeg).length} parity-degenerate, ${qreg.length} quasi-regular). `
+    +`Explained-information fraction ranges ${(100*Math.min(...ifr)).toFixed(0)}–${(100*Math.max(...ifr)).toFixed(0)}% `
+    +`and screening ${(100*Math.min(...scr)).toFixed(0)}–${(100*Math.max(...scr)).toFixed(0)}% — family-specific — `
+    +`while window occupancy across all ${wins.length} signal-carrying families is `
+    +`${(100*mean(wins)).toFixed(2)}% ± ${(100*sd(wins)).toFixed(2)}%: the one-third law.`;
+  // fig 7: three dot columns
+  const W=880, H=300, s = svgIn('fig7', W, H);
+  const cols = [
+    {t:'I(g;θ)/H(g)', v:r=>r.I_frac, lo:0, hi:1, fmt:v=>(100*v).toFixed(1)+'%'},
+    {t:'screening ratio', v:r=>r.screen, lo:0, hi:1, fmt:v=>(100*v).toFixed(1)+'%'},
+    {t:'window occupancy', v:r=>r.window_frac, lo:0, hi:1, fmt:v=>(100*v).toFixed(1)+'%'},
+  ];
+  const T=34, B=30, colW=(W-80)/3;
+  cols.forEach((c,ci)=>{
+    const cx0 = 50 + ci*colW + colW/2;
+    const y = v => T + (1-(v-c.lo)/(c.hi-c.lo))*(H-T-B);
+    el('line',{x1:cx0,x2:cx0,y1:T,y2:H-B,class:'axisline'},s);
+    [0,.25,.5,.75,1].forEach(v=>{ el('line',{x1:cx0-5,x2:cx0+5,y1:y(v),y2:y(v),class:'axisline'},s);
+      if(ci===0) txt(s,cx0-12,y(v)+4,(v*100)+'%',{class:'tick','text-anchor':'end'}); });
+    txt(s,cx0,T-14,c.t,{class:'axl','text-anchor':'middle'});
+    if(ci===2) el('line',{x1:cx0-34,x2:cx0+34,y1:y(1/3),y2:y(1/3),stroke:css('--muted'),'stroke-dasharray':'3 3'},s);
+    const pool = (ci===2) ? fam.concat(qreg.filter(r=>(r.window_frac||0)>0.1)) : fam;
+    pool.forEach(r=>{
+      const uv = r.file.replace('u','(').replace('_',',').replace('.bin',')');
+      const isBase = r.file==='u1_2.bin';
+      const isQ = (r.H_g||0)<2;
+      const jitter = (r.file.charCodeAt(1)*7+r.file.charCodeAt(3)*13)%44-22;
+      const d = el('circle',{cx:cx0+jitter,cy:y(c.v(r)),r:isBase?5.5:(isQ?2.6:4),
+        fill:isBase?css('--s2'):css('--s1'),opacity:isBase?1:(isQ?.3:.8),
+        stroke:css('--surface'),'stroke-width':isQ?0.6:1.2},s);
+      d.addEventListener('mousemove',ev=>showTT(ev,`U${uv}${isQ?' (quasi-regular)':''}<br>${c.t}: ${c.fmt(c.v(r))}<br>λ=${r.lam.toFixed(5)} d=${r.density.toFixed(4)}`));
+      d.addEventListener('mouseleave',hideTT);
+      if(isBase&&ci===0) txt(s,cx0+jitter+9,y(c.v(r))+4,'(1,2)',{class:'dl',fill:css('--s2')});
+    });
+  });
+})();
+</script>

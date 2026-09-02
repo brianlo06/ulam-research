@@ -1,0 +1,21 @@
+{
+ "frac_cos_neg": 0.999994597281352,
+ "exceptions": [
+  2,
+  3,
+  47,
+  69
+ ],
+ "n_exceptions": 4,
+ "gap_support_size": 99,
+ "gap_max": 587,
+ "H_gap_bits": 3.3485238508720285,
+ "H_g_given_theta": 1.7278328522924848,
+ "I_theta_gap": 1.6206909985795437,
+ "H_g_given_prevgap": 1.9997569430044293,
+ "H_g_given_prev2": 1.728908990706016,
+ "H_g_given_theta_prevgap": 1.6395159013537781,
+ "acc_marginal": 0.3692830717738635,
+ "acc_theta": 0.5938689865971876,
+ "acc_prev": 0.5637779152473236
+}

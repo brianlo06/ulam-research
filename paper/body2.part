@@ -1,0 +1,156 @@
+  <h2><span class="secno">3</span>The signal, replicated and sharpened</h2>
+  <p>Our independent pipeline reproduces the phenomenon precisely. Maximizing the exponential sum over the
+  2.96M-term dataset gives</p>
+  <div class="kbox">
+    <div class="kpi"><div class="v">2.5714474984</div><div class="l">λ (this work, N = 2.96×10⁶)</div></div>
+    <div class="kpi"><div class="v">2.4434429678<span class="u">302</span></div><div class="l">2π/λ — agrees with the
+      Gibbs–McCranie trillion-scale value 2.443442967784743 to ten significant digits</div></div>
+    <div class="kpi"><div class="v">{2, 3, 47, 69}</div><div class="l">complete list of elements with
+      cos(λa) ≥ 0 below 4×10⁷ — identical to Steinerberger's list</div></div>
+    <div class="kpi"><div class="v">99.9885<span class="u">%</span></div><div class="l">of elements lie in the
+      middle third ρ ∈ [⅓, ⅔], where ρ = λa/2π mod 1</div></div>
+  </div>
+</div>
+
+<div class="wide">
+  <figure>
+    <div id="fig1" class="vz"></div>
+    <figcaption><b>Figure 1</b> The hidden signal. Each dot is an Ulam number a<sub>n</sub> (log-spaced sample
+    of 1,066 from the 2,959,301 below 4×10⁷), plotted by index n against its circle coordinate
+    ρ = λa<sub>n</sub>/2π mod 1. The sequence confines itself to the shaded middle third of the circle.
+    Orange marks the outliers — the 340 elements outside [⅓, ⅔] — which press ever closer to the window edges
+    as n grows; the four labelled elements {2, 3, 47, 69} are the only ones in the outer half, and
+    §5 shows they are also the sequence's four principal generators. Hover for values.</figcaption>
+  </figure>
+</div>
+
+<div class="col">
+  <p>The support tightens toward exactly [⅓, ⅔]: the interval holding all but 10⁻⁴ of the mass is
+  [0.3336, 0.6661] at this scale, and every one of the 340 outliers found beyond n ≈ 100 sits within 0.03 of
+  an edge (distance to edge vs. log value: r = −0.65). This is Gibbs's edge-convergence conjecture
+  <a href="#ref-gibbs"><sup class="fn">[4]</sup></a> in quantitative form.</p>
+  <p>The Fourier spectrum of the set contains, at every amplitude we can resolve, only the harmonic comb
+  {kλ mod 2π}: the twelve largest peaks below the Nyquist frequency are, in order, k = 1, 5, 4, 6, 2, 3, 9,
+  8, 7, 10, 11, 13. We sharpened this test by computing the spectrum separately for each gap-class — the
+  positions whose following gap is 2, 3, 17, 20, 25, 12, 22, 15 — and found the same comb and nothing else in
+  each subpopulation. Whatever hidden state the sequence carries beyond θ (and §4 shows something must be),
+  it is not a second rotation: there is no other frequency to find, even class-resolved.</p>
+  <p>The window density itself (Figure 2) is not uniform: mass piles against the interior of both edges and
+  dips at the centre — the shape behind Steinerberger's harmonic coefficients. The mean drift per term is
+  λ/d mod 2π = 0.528 of a full circle, so consecutive terms land on alternating sides of the window: the
+  sequence sweeps the window in a two-phase gait, which is where the strong negative correlation of adjacent
+  gaps (§4) begins.</p>
+</div>
+
+<div class="wide">
+  <figure>
+    <div id="fig2" class="vz"></div>
+    <figcaption><b>Figure 2</b> The invariant window profile: kernel of the phenomenon. Density of
+    ρ = λa/2π mod 1 over all 2.96M elements (200 bins). 99.99% of mass lies inside the middle third
+    (shaded); the profile is stable from N = 10⁵ on and is, by §4, the marginal of the sequence's
+    effective hidden state.</figcaption>
+  </figure>
+</div>
+
+<div class="col">
+  <h2><span class="secno">4</span>How much does the signal know?</h2>
+  <p>The natural symbolic encoding of the sequence is its gap process g<sub>n</sub> = a<sub>n+1</sub> −
+  a<sub>n</sub>. The gaps use a remarkably small alphabet — 114 distinct values across 2.96M steps, growing
+  roughly logarithmically (99 at N = 7.4×10⁵), with no gap exceeding 587 anywhere below 4×10⁷ — and a
+  first-order entropy of H(g) = 3.35 bits. Because θ<sub>n+1</sub> = θ<sub>n</sub> + λg<sub>n</sub> mod 2π
+  exactly, the pair (θ<sub>n</sub>, g<sub>n</sub>) is the natural state-observation pair: <em>if</em> the
+  Ulam rule were secretly a function of the circle coordinate, g<sub>n</sub> would be determined by
+  θ<sub>n</sub> and the sequence would be an interval-exchange-like dynamical system. It is not — but it is
+  surprisingly close, in a specific sense.</p>
+
+  <h3><span class="secno">4.1</span>The signal carries half the local information</h3>
+  <p>Conditioning the next gap on the circle coordinate removes
+  I(g<sub>n</sub>; θ<sub>n</sub>) = <strong>1.61 bits — 48.2%</strong> of H(g). The estimate saturates under
+  refinement of the θ-partition (1.36, 1.58, 1.62, 1.63, 1.64 bits at 16, 64, 256, 1024, 4096 bins), so
+  1.6 bits is a property of the coordinate, not of a discretization. A maximum-likelihood guess of the next
+  gap succeeds 36.9% of the time from the marginal and 59.4% from θ. The conditional structure is vividly
+  banded (Figure 3): each gap value is <em>phase-locked</em> to a sub-interval of the window, as it must be —
+  a gap g is geometrically feasible at θ only if θ + λg mod 2π lands back inside the window — but the bands
+  are graded rather than sharp, and no refinement of θ makes them deterministic.</p>
+</div>
+
+<div class="wide">
+  <figure>
+    <div id="fig3" class="vz"></div>
+    <figcaption><b>Figure 3</b> Phase-locking of gaps to the hidden coordinate: P(g<sub>n</sub> | ρ<sub>n</sub>)
+    for the ten most common gaps (rows, 76% of all steps; ordered by wrapped step λg mod 2π), over 96 bins of
+    ρ across the window. Ink depth is conditional probability (sequential scale); the grey strip on top shows
+    where the sequence actually spends its time. Each gap operates from its own phase territory — but within
+    a territory the choice of gap remains genuinely uncertain. Hover any cell for values.</figcaption>
+  </figure>
+</div>
+
+<div class="col">
+  <h3><span class="secno">4.2</span>θ is an approximate sufficient statistic — the screening property</h3>
+  <p>Adjacent gaps are strongly dependent: I(g<sub>n</sub>; g<sub>n−1</sub>) = 1.35 bits. Conditioned on the
+  circle coordinate, this dependence all but vanishes:</p>
+  <p style="text-align:center" class="mono">
+  I(g<sub>n</sub>; g<sub>n−1</sub> | θ<sub>n</sub>) = 0.088 bits — a <strong>93.5% reduction</strong>.</p>
+  <p>Almost everything one gap tells you about the next is <em>routed through the circle</em>. In the language
+  of state-space models, θ acts as an approximate sufficient statistic for one-step prediction; the gap
+  process is close to a hidden-Markov process whose hidden state is a point on the circle advancing by
+  λg per step. We regard this as the report's central new fact about the signal: it upgrades the signal from
+  a distributional curiosity (a non-uniform marginal) to the near-complete <em>mediator of the sequence's
+  short-range dynamics</em>. The residual 0.088 bits is small but robustly nonzero (stable across bin counts
+  and both dataset halves), and at lags 2–5 the θ-conditioned dependence (~0.2 bits) actually exceeds its
+  unconditioned counterpart — conditioning on a common intermediate reveals, as it should, that some
+  additional slow state exists beyond the circle.</p>
+
+  <h3><span class="secno">4.3</span>What the signal does not know</h3>
+  <p>How much structure is there in total? Deepening the context, the conditional entropy of the next gap
+  falls without reaching a floor we can certify:</p>
+</div>
+
+<div class="wide">
+  <figure>
+    <div id="fig4" class="vz"></div>
+    <figcaption><b>Figure 4</b> The information ladder. Left: conditional entropy of the next gap under
+    increasing conditioning (bits/gap; split-half bias-corrected plug-in). The single circle coordinate
+    (accented bar) is worth as much as the two preceding gaps combined; but deeper context keeps digging below
+    it, to ~0.91 bits at depth 6, with LZMA on the whole 2.96M-symbol gap sequence achieving 1.00 bits/gap.
+    A density-matched random set would cost 5.14 bits/gap (dashed marker, axis clipped). Right: the screening
+    measurement of §4.2. Hover bars for exact values.</figcaption>
+  </figure>
+</div>
+
+<div class="col">
+  <p>Three reference points calibrate the ladder. A memoryless random set of the same density would cost
+  H₂(d)/d = 5.14 bits/gap: the Ulam sequence is about <strong>5× more compressible than random</strong>.
+  A deterministic sequence would reach 0: the observed ~0.9–1.0 bits/gap of apparent entropy at depth 6
+  (and under a general-purpose compressor with unbounded context) is what any finite-order model of the
+  Ulam sequence currently fails to explain — about 0.07 bits per integer. And the circle coordinate's
+  1.6 bits sit almost exactly at the level of two gaps of exact history — H(g|θ) = 1.735 vs.
+  H(g|g₁,g₂) = 1.730 — a coincidence worth a conjecture (§7). The sequence is emphatically not
+  “quasi-random”: it is five-sixths order; but the remaining sixth has, so far, the signature of genuine
+  randomness rather than of an undiscovered second frequency (§3).</p>
+
+  <h3><span class="secno">4.4</span>The residue diffuses: no bounded remainder</h3>
+  <p>If the Ulam sequence were a model set — a cut-and-project quasicrystal, the cleanest structure
+  compatible with a circle window — its counting function would track d·x with bounded error. It does not.
+  The variance of m-step block sums S<sub>m</sub> = g<sub>n+1</sub>+⋯+g<sub>n+m</sub> grows as
+  m<sup>0.95±0.03</sup> across three decades (Figure 5): asymptotically linear diffusion, with an
+  anti-correlation-suppressed diffusion constant of ≈ 0.28–0.35 × Var(g). Equivalently the deviation
+  e<sub>n</sub> = a<sub>n</sub> − n/d executes a slow random walk (its spectrum is a featureless low-frequency
+  continuum — no discrete line, matching the class-resolved comb search of §3). Combined with §4.2 this gives
+  the report's structural synthesis: <em>a rigid single-frequency skeleton, occupied stochastically</em>.
+  The window and its profile are deterministic and invariant; which window slots the sequence takes drifts
+  diffusively, carrying positive apparent entropy. “Stochastic quasicrystal” seems to us the accurate name,
+  and it explains simultaneously why the sequence looks so ordered (Fourier sees the skeleton) and why its
+  density has resisted proof (the occupancy process is not finitely determined by the visible state).</p>
+</div>
+
+<div class="wide">
+  <figure>
+    <div id="fig5" class="vz"></div>
+    <figcaption><b>Figure 5</b> Diffusive occupancy. Left: Var(S<sub>m</sub>)/(m·Var g) vs. block length m
+    (log–log x). An i.i.d. process sits at 1 (upper line); a bounded-remainder set decays like 1/m (grey
+    guide); the Ulam sequence descends through short-range anti-correlation and then flattens near 0.3 —
+    linear-in-m variance, H ≈ 0.48. Right: the deviation a<sub>n</sub> − n/d across the full dataset —
+    a random walk of amplitude ±6×10³ over 3M terms, not a bounded fluctuation.</figcaption>
+  </figure>
+</div>

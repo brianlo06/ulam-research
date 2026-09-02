@@ -1,0 +1,116 @@
+<div class="col">
+  <div class="eyebrow">Experimental Mathematics · Computational Report</div>
+  <h1>Anatomy of a Hidden Signal</h1>
+  <p class="byline" style="font-family:'Newsreader',serif;font-size:1.25rem;color:var(--ink2);margin-top:2px">
+    An information-theoretic dissection of the Ulam sequence</p>
+  <p class="byline">Claude (Anthropic) <span class="sep">·</span> September 2, 2026
+    <span class="sep">·</span> all computations performed locally for this report</p>
+
+  <div class="abstract">
+    <span class="lbl">Abstract</span>
+    The Ulam sequence — 1, 2, 3, 4, 6, 8, 11, 13, 16, 18, 26, … , each term the smallest integer with
+    <em>exactly one</em> representation as a sum of two distinct earlier terms — has resisted analysis for
+    sixty years. Its one known regularity is startling: Steinerberger discovered a constant
+    λ ≈ 2.5714474995 such that λa<sub>n</sub> mod 2π concentrates on a strict sub-interval of the circle.
+    Why the signal exists, and how much of the sequence it governs, remain open. This report treats those
+    questions empirically. Working from the 2,959,301 Ulam numbers below 4×10⁷ (with every element's unique
+    representation recorded), we measure — apparently for the first time — <em>how much the hidden signal
+    actually knows</em>. The circle coordinate θ<sub>n</sub> = λa<sub>n</sub> mod 2π carries
+    1.61 bits ≈ 48% of the entropy of the next gap and screens off 93.5% of the mutual information between
+    consecutive gaps, making θ an approximate sufficient statistic for local structure — yet ~1 bit/gap of
+    apparent entropy survives all conditioning we could apply, and block fluctuations grow diffusively
+    (Hurst H ≈ 0.48) with a diffusion constant ~0.34× the i.i.d. value, ruling out bounded-remainder
+    (quasicrystal) structure. The generative anatomy is more extreme than previously reported: growth is
+    administered by a caste of just 340 “outlier” elements (~n<sup>0.30</sup> of the first n terms) whose
+    top ten members supply 48.5% of all representation slots, and the four classical exceptions
+    {2, 3, 47, 69} are exactly the four dominant generators. We verify a circle-geometry lemma exactly on
+    the data — no element of the middle third is ever the sum of two middle-third elements — so the bulk of
+    the sequence provably cannot reproduce itself: all growth is brokered by the boundary. A scan of 80
+    starting pairs (u,v) then splits the anatomy into universal and particular: information content is
+    family-specific, but every one of 63 signal-carrying families confines itself to a window of measure
+    0.3312 ± 0.0007 of its own circle — precisely the extremal measure ⅓ at which a window can avoid its own
+    sumset. We propose the synthesis that Ulam sequences are <em>stochastic quasicrystals</em>: rigid
+    one-frequency skeletons, saturating the one-third self-exclusion bound, occupied diffusively at positive
+    apparent entropy under a self-sustaining boundary oligarchy.
+  </div>
+
+  <ul class="contrib">
+    <li><strong>Signal replication at scale.</strong> Independent pipeline reproduces λ to ten significant
+      digits of the Gibbs–McCranie value and the exception set {2, 3, 47, 69} exactly; the Fourier spectrum
+      shows a pure harmonic comb kλ, and — a new, sharper check — the comb remains pure within every
+      gap-class subpopulation.</li>
+    <li><strong>Information content of the signal.</strong> First measurement: I(g<sub>n</sub>; θ<sub>n</sub>)
+      = 1.61 bits (48.2% of H(g) = 3.35 bits), saturating under bin refinement; θ screens off 93.5% of
+      adjacent-gap dependence; apparent entropy ≈ 0.9–1.0 bits/gap remains at depth-6 context and under LZMA —
+      the sequence is ~5× more ordered than a random set of equal density but decisively not deterministic
+      at this order.</li>
+    <li><strong>Diffusive, not bounded-remainder.</strong> Var of m-gap block sums grows ∝ m<sup>0.95</sup>
+      (H ≈ 0.48) at ~0.28–0.35× the i.i.d. rate: the counting deviation performs a slow random walk, refuting
+      model-set/bounded-discrepancy structure for U(1,2).</li>
+    <li><strong>The generative oligarchy.</strong> With every unique representation recorded: 99.95% of
+      elements are (outlier + inlier); the outlier is the smaller summand in 99.998% of those; ten elements
+      fill 48.5% of all representation slots; outlier count grows ~n<sup>0.30</sup>, hugging the window edges;
+      exact count identities (e.g. #{reps via 2} = #{gaps of 2} = 1,093,128) tie the oligarchy to the gap
+      alphabet.</li>
+    <li><strong>The one-third law.</strong> Across an 80-family scan, information content turns out to be
+      family-specific (I/H from 15% to 52%) — but window occupancy is universal: 0.3312 ± 0.0007 of the
+      circle in all 63 signal-carrying families. One-third is exactly the largest measure at which a window
+      W can satisfy (W+W) ∩ W = ∅ mod 1: Ulam sequences saturate the self-exclusion bound.</li>
+  </ul>
+
+  <h2><span class="secno">1</span>The problem</h2>
+  <p>Stanisław Ulam introduced the sequence in 1964 as an example of a simply defined set with no visible
+  law <a href="#ref-ulam"><sup class="fn">[1]</sup></a>. Start with 1 and 2; thereafter adjoin the smallest
+  integer expressible as a sum of two distinct earlier terms in <em>exactly one way</em>. The sequence begins</p>
+  <p class="mono" style="font-size:.9rem; letter-spacing:.02em; color:var(--ink2)">
+  1, 2, 3, 4, 6, 8, 11, 13, 16, 18, 26, 28, 36, 38, 47, 48, 53, 57, 62, 69, 72, 77, 82, 87, 97, 99, …</p>
+  <p>Sixty years of study produced almost nothing provable about U(1,2): the sequence is infinite (trivially),
+  and its empirical density hovers near 0.0740 with no proof that a density exists at all. Ulam himself
+  remarked that the sequence “seems to be quite erratic.” The one crack in the wall appeared in 2015, when
+  Steinerberger <a href="#ref-stein"><sup class="fn">[2]</sup></a>, Fourier-analyzing the first 10⁷ terms,
+  found a frequency λ ≈ 2.5714474995 at which the exponential sums refuse to cancel: the dilated residues
+  λa<sub>n</sub> mod 2π do not equidistribute but instead draw a fixed, absolutely continuous, compactly
+  supported density — for all but four elements, cos(λa<sub>n</sub>) &lt; 0. By Weyl's theorem the set of
+  dilations with this property has measure zero for <em>any</em> integer sequence; that a natural sequence
+  singles one out is, to date, unexplained. Gibbs and McCranie pushed the computation to 10¹²
+  <a href="#ref-gibbs"><sup class="fn">[4]</sup></a>, pinning the wavelength 2π/λ = 2.443442967784743(2),
+  and Gibbs observed that the residues concentrate in the middle third of the period, coining
+  <em>outliers</em> for the rare exceptions and building a linear-time generator on that empirical fact
+  <a href="#ref-gibbs2"><sup class="fn">[5]</sup></a> (see also Knuth's literate implementation
+  <a href="#ref-knuth"><sup class="fn">[6]</sup></a>). A parallel line of work established that many other
+  starting pairs (u,v) give <em>regular</em> (eventually periodic-gap) sequences
+  <a href="#ref-ss"><sup class="fn">[7]</sup></a>, and that Ulam sets deform with surprising rigidity
+  <a href="#ref-hkss"><sup class="fn">[8]</sup></a>.</p>
+  <p>What the literature does not contain is a quantitative account of what the signal <em>does</em>.
+  A frequency at which mass clusters is a statement about marginals; the Ulam rule is a statement about
+  dynamics — which integer joins next. Between the two sits an unasked question:
+  <em>how much of the sequence's local behaviour is a function of its circle coordinate?</em>
+  If the answer were “all of it,” the sequence would be a deterministic dynamical system in disguise and the
+  sixty-year-old questions would collapse. If “none,” the signal would be a curiosity. This report measures
+  the answer, and finds it is — quantitatively — in between, in a structured way: the signal is close to a
+  sufficient statistic for short-range behaviour, while an irreducible-looking diffusive residue survives at
+  long range.</p>
+
+  <h2><span class="secno">2</span>Data and methods</h2>
+  <p>All computations were performed for this report on an 8-core consumer laptop; the complete pipeline
+  (a ~120-line C generator and analysis scripts, in <code>~/ulam-research/</code>) reruns from scratch in
+  under an hour.</p>
+  <p><strong>Generation.</strong> We maintain three bitsets over [0, L] — membership, exactly-one
+  representation, and two-or-more — and, when a term a joins, fold the shifted membership bitset
+  (S ≪ a) into the counters. All sums created by a new term land strictly ahead of the scan frontier, so a
+  single left-to-right sweep is exact; cost is Σ<sub>n</sub> min(a<sub>n</sub>, L−a<sub>n</sub>)/64 words.
+  The main dataset is U(1,2) ∩ [1, 4×10⁷]: N = 2,959,301 terms. A modified generator also records, for every
+  element, the summand pair of its unique representation at the moment of acceptance (provably final, since
+  later sums exceed the frontier); the recorded pairs were verified against brute force for all terms below
+  3000. A family scan generates U(u,v) ∩ [1, 4×10⁶] over a grid of starting pairs.</p>
+  <p><strong>Signal estimation.</strong> λ is estimated by maximizing |N⁻¹Σ e<sup>iλa<sub>n</sub></sup>|
+  with three nested grid refinements and a parabolic polish, seeded from the FFT of the set's indicator
+  function (resolution 2π/L, no prior knowledge of λ needed for detection).</p>
+  <p><strong>Entropy estimation.</strong> Gap symbols g<sub>n</sub> = a<sub>n+1</sub>−a<sub>n</sub>;
+  circle coordinate θ<sub>n</sub> = λa<sub>n</sub> mod 2π, discretized to 128 bins for conditioning
+  (results are stable from 64 to 4096 bins; saturation is itself reported as a finding). Conditional
+  entropies use the plug-in estimator with a split-half Richardson correction,
+  Ĥ = 2H(full) − ½[H(first half) + H(second half)], which cancels the leading 1/N bias term; plug-in and
+  corrected values are both reported where they differ visibly. A shuffle control — permuting the gap
+  sequence, rebuilding partial sums, and recomputing every statistic — returns |S| = 0.0011 and
+  I(g; θ) = 0.0005 bits, confirming the estimators do not manufacture structure.</p>

@@ -1,0 +1,115 @@
+<meta charset="utf-8">
+<title>Anatomy of a Hidden Signal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#f9f9f7; --surface:#fcfcfb; --ink:#131311; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --hair:rgba(11,11,11,.10);
+  --accent:#1c5cab; --accent-soft:#e5edf8;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --seq100:#cde2fb; --seq250:#86b6ef; --seq400:#3987e5; --seq550:#1c5cab; --seq700:#0d366b;
+  --band:rgba(42,120,214,.075);
+  --code-bg:#f1f0ec;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0d0d0d; --surface:#1a1a19; --ink:#f0efe9; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --hair:rgba(255,255,255,.10);
+    --accent:#86b6ef; --accent-soft:#16233a;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --band:rgba(57,135,229,.10);
+    --code-bg:#232322;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0d0d0d; --surface:#1a1a19; --ink:#f0efe9; --ink2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --hair:rgba(255,255,255,.10);
+  --accent:#86b6ef; --accent-soft:#16233a;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --band:rgba(57,135,229,.10);
+  --code-bg:#232322;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ground); color:var(--ink);
+  font-family:"STIX Two Text", Georgia, serif;
+  font-size:17.5px; line-height:1.68;
+  margin:0; padding:0 20px 90px;
+}
+.col{max-width:46rem; margin:0 auto}
+.wide{max-width:58rem; margin:0 auto}
+h1,h2,h3{font-family:"Newsreader", Georgia, serif; text-wrap:balance; line-height:1.16}
+h1{font-size:clamp(2.1rem,5.5vw,3.3rem); font-weight:600; letter-spacing:-.012em; margin:.4em 0 .3em}
+h2{font-size:1.55rem; font-weight:600; margin:2.6em 0 .7em}
+h3{font-size:1.17rem; font-weight:600; margin:2em 0 .5em}
+h2 .secno, h3 .secno{color:var(--accent); font-weight:500; margin-right:.55em; font-variant-numeric:tabular-nums}
+p{margin:.85em 0}
+a{color:var(--accent); text-decoration:none; border-bottom:1px solid color-mix(in srgb, var(--accent) 35%, transparent)}
+a:hover{border-bottom-color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+strong{font-weight:600}
+.eyebrow{
+  font-family:"IBM Plex Mono", ui-monospace, monospace; font-size:.72rem; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:70px 0 6px;
+}
+.byline{color:var(--ink2); font-size:.98rem; margin:10px 0 4px}
+.byline .sep{color:var(--muted); margin:0 .5em}
+.mono, code{font-family:"IBM Plex Mono", ui-monospace, monospace}
+code{font-size:.86em; background:var(--code-bg); padding:.1em .35em; border-radius:4px}
+.abstract{
+  background:var(--surface); border:1px solid var(--hair); border-radius:10px;
+  padding:26px 30px; margin:34px 0 8px; font-size:.985rem;
+}
+.abstract .lbl{font-family:"IBM Plex Mono",monospace; font-size:.7rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px}
+.contrib{margin:26px 0 0; padding:0 0 0 0; list-style:none; counter-reset:c}
+.contrib li{
+  counter-increment:c; position:relative; padding:11px 0 11px 52px;
+  border-top:1px solid var(--grid); font-size:.97rem;
+}
+.contrib li:last-child{border-bottom:1px solid var(--grid)}
+.contrib li::before{
+  content:"R" counter(c); position:absolute; left:0; top:12px;
+  font-family:"IBM Plex Mono",monospace; font-size:.78rem; font-weight:600; color:var(--accent);
+  background:var(--accent-soft); border-radius:5px; padding:2px 7px;
+}
+figure{margin:2.2em 0; background:var(--surface); border:1px solid var(--hair);
+  border-radius:12px; padding:22px 22px 14px}
+figcaption{font-size:.9rem; color:var(--ink2); line-height:1.55; margin-top:10px;
+  padding-top:12px; border-top:1px solid var(--grid)}
+figcaption b{font-family:"IBM Plex Mono",monospace; font-size:.78rem; letter-spacing:.08em;
+  color:var(--accent); text-transform:uppercase; font-weight:600; margin-right:.5em}
+.vz{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.vz text{fill:var(--ink2); font-size:11px}
+.vz .tick{fill:var(--muted); font-size:10.5px; font-variant-numeric:tabular-nums}
+.vz .axl{fill:var(--muted); font-size:10.5px; letter-spacing:.05em}
+.vz .dl{font-size:10.5px; font-weight:600}
+.gridline{stroke:var(--grid); stroke-width:1}
+.axisline{stroke:var(--axis); stroke-width:1}
+table{border-collapse:collapse; width:100%; margin:1.4em 0; font-size:.92rem}
+th{font-family:"IBM Plex Mono",monospace; font-size:.72rem; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--muted); font-weight:500; text-align:left; padding:8px 12px 6px; border-bottom:1.5px solid var(--axis)}
+td{padding:7px 12px; border-bottom:1px solid var(--grid); font-variant-numeric:tabular-nums}
+td.num{text-align:right; font-family:"IBM Plex Mono",monospace; font-size:.84rem}
+th.num{text-align:right}
+.tblwrap{overflow-x:auto}
+.note{font-size:.9rem; color:var(--ink2)}
+.lemma{border-left:3px solid var(--accent); background:var(--surface); border-radius:0 10px 10px 0;
+  padding:16px 22px; margin:1.6em 0; font-size:.97rem}
+.lemma .t{font-family:"Newsreader",serif; font-weight:600}
+.refs{font-size:.92rem; line-height:1.6}
+.refs li{margin:.55em 0}
+.tooltip{
+  position:fixed; pointer-events:none; z-index:50; display:none;
+  background:var(--ink); color:var(--ground); border-radius:7px; padding:7px 11px;
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; line-height:1.5; max-width:260px;
+}
+sup.fn{font-size:.72em; color:var(--accent)}
+.kbox{display:flex; flex-wrap:wrap; gap:14px; margin:1.6em 0}
+.kpi{flex:1 1 150px; background:var(--surface); border:1px solid var(--hair); border-radius:10px; padding:14px 18px}
+.kpi .v{font-family:system-ui,sans-serif; font-size:1.65rem; font-weight:650; color:var(--ink); letter-spacing:-.01em}
+.kpi .l{font-size:.78rem; color:var(--ink2); margin-top:3px; line-height:1.4}
+.kpi .v .u{font-size:.9rem; color:var(--muted); font-weight:500}
+@media (prefers-reduced-motion: reduce){ *{animation:none!important; transition:none!important} }
+@media print{ body{background:#fff} figure{break-inside:avoid} }
+</style>

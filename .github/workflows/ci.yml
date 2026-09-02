@@ -1,0 +1,34 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build generators
+        run: |
+          cc -O3 -o ulam  src/ulam.c
+          cc -O3 -o ulam2 src/ulam2.c
+
+      - name: Smoke test against OEIS A002858
+        run: |
+          ./ulam 1 2 100000 u12.bin 2> log.txt
+          cat log.txt
+          grep -q "N=7584" log.txt
+          grep -q "head: 1 2 3 4 6 8 11 13 16 18 26 28 36 38 47 48 53 57 62 69" log.txt
+
+      - name: Verify recorded representations (brute force, stdlib python)
+        run: |
+          ./ulam2 1 2 5000 u12r.bin 2>/dev/null
+          python3 tests/verify_reps.py u12r.bin
+
+      - name: Verify a second family U(2,3)
+        run: |
+          ./ulam 2 3 20000 u23.bin 2> log23.txt
+          cat log23.txt
+          grep -q "head: 2 3 5 7 8 9 13 14 18 19 24 25 29 30 35 36 40 41 46 51" log23.txt

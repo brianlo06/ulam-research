@@ -1,0 +1,157 @@
+<div class="col">
+  <h2><span class="secno">5</span>The generative oligarchy</h2>
+  <p>Everything above treats the sequence as a time series. Its defining rule, though, is <em>relational</em> —
+  every element owes its existence to exactly one pair of parents — and recording those parents at generation
+  time exposes the sequence's social structure. Begin with geometry:</p>
+  <div class="lemma">
+    <span class="t">Lemma (the middle third cannot reproduce itself).</span>
+    Write ρ(x) = λx/2π mod 1, so ρ(x+y) = ρ(x)+ρ(y) mod 1. If ρ(x) and ρ(y) both lie strictly inside
+    (⅓, ⅔), then ρ(x)+ρ(y) ∈ (⅔, 4⁄3), whose reduction mod 1 avoids (⅓, ⅔) entirely. Hence a sum of two
+    strict-middle-third integers is never a strict-middle-third integer.
+  </div>
+  <p>The lemma is elementary (Knuth notes the observation in his implementation
+  <a href="#ref-knuth"><sup class="fn">[6]</sup></a>); its force comes from pairing it with the empirical
+  confinement of §3. If 99.99% of the sequence lives in the middle third, then 99.99% of the sequence is
+  barred from breeding within its own caste: <strong>every act of reproduction must recruit the boundary</strong>.
+  The recorded representations verify this exactly — among all 2.96M elements there is not a single
+  middle-third element whose parents are both middle-third elements. (Sixteen elements below 4×10⁷ do have two
+  inlier parents; every one is itself an outlier, and in each case the parents' coordinates hug a window
+  edge and land the child just outside the opposite edge — the side predicted by the lemma, 16 out of 16.
+  These rare edge-grazing births are precisely how the outlier caste is replenished.)</p>
+  <p>The division of labour this forces is extreme:</p>
+  <div class="kbox">
+    <div class="kpi"><div class="v">99.95<span class="u">%</span></div><div class="l">of elements are
+      outlier + inlier; the outlier is the <em>smaller</em> parent in 99.998% of them</div></div>
+    <div class="kpi"><div class="v">48.5<span class="u">%</span></div><div class="l">of all parent slots are
+      filled by just <strong>ten elements</strong>: 2, 3, 47, 69, 102, 339, 36, 273, 8, 2581</div></div>
+    <div class="kpi"><div class="v">{2,3,47,69}</div><div class="l">the four cos-rule exceptions are exactly
+      the four top generators — 36% of all slots by themselves</div></div>
+    <div class="kpi"><div class="v">39.5<span class="u">%</span></div><div class="l">of elements are sterile —
+      never a parent; inlier parenthood is ~Poisson(1)</div></div>
+  </div>
+  <p>So the canonical Ulam number is <em>(tiny outlier) + (recent inlier)</em>: the sequence advances by
+  copying its own recent past forward by one of a handful of magic offsets, with the uniqueness condition
+  arbitrating collisions. The offsets are not arbitrary: exact count identities lock the small ones to the
+  gap alphabet — the number of elements with parent 2 equals the number of gaps of size 2
+  <span class="mono" style="font-size:.85em">(1,093,128 = 1,093,128)</span>, likewise parent 3 and gaps of 3
+  <span class="mono" style="font-size:.85em">(405,169 = 405,169)</span>, because an element at distance 2
+  behind another <em>is</em> its gap-2 predecessor. The larger oligarchs (47, 69, 102, 339, …) are pure
+  bridges: gap 102 never occurs, yet parent 102 acts 249,275 times. Their spacings echo the quasi-period —
+  69−47 = 22 ≈ 9 wavelengths, 339−273 = 66 — the clustering period first explained by Gibbs
+  <a href="#ref-gibbs"><sup class="fn">[4]</sup></a>.</p>
+</div>
+
+<div class="wide">
+  <figure>
+    <div id="fig6" class="vz"></div>
+    <figcaption><b>Figure 6</b> The oligarchy, measured. Left: cumulative share of all parent slots vs.
+    number of generators, ranked (log x). The curve is two regimes: a cliff — ten elements to 48.5% — and a
+    long democratic tail through the inlier bulk (each used ~Poisson(1) times as the larger parent).
+    Right: growth of the outlier caste — count among the first n terms (log–log) with the fitted
+    ~n<sup>0.30</sup> guide. The caste keeps growing forever, but at a vanishing relative rate: the boundary
+    stays thin.</figcaption>
+  </figure>
+</div>
+
+<div class="col">
+  <h2><span class="secno">6</span>Across the family: which parts are universal?</h2>
+  <p>Ulam's construction runs from any starting pair (u,v). The literature splits families into
+  <em>regular</em> — gap sequence eventually periodic, proven for several infinite classes
+  <a href="#ref-ss"><sup class="fn">[7]</sup></a> — and <em>erratic</em>, where Steinerberger reported
+  family-specific signals <a href="#ref-stein"><sup class="fn">[2]</sup></a>. We generated 80 families
+  U(u,v) to 4×10⁶ (u ≤ 10), classified each by exact tail-periodicity of its gap sequence, and ran the full
+  battery of §4 on each: signal frequency, window occupancy, and — new to this report — information content
+  and screening ratio. Four classes emerge: 12 detected-periodic families; 5 <em>parity-degenerate</em>
+  families (all but finitely many terms odd: the “signal” is λ = π with |S| = 1, a bare parity constraint
+  carrying zero gap information); 48 <em>quasi-regular</em> families (H(g) &lt; 2 bits — the (1,n) band,
+  drifting toward regularity, consistent with the proofs); and 15 fully erratic families. The erratic
+  battery results:</p>
+  <div id="famtable" class="tblwrap"></div>
+  <p class="note" id="famsummary"></p>
+</div>
+
+<div class="wide">
+  <figure>
+    <div id="fig7" class="vz"></div>
+    <figcaption><b>Figure 7</b> What is universal and what is not. Each dot is one family; blue = fully
+    erratic, faint blue = quasi-regular, orange = U(1,2). Left: fraction of gap entropy explained by the
+    family's own circle coordinate — <em>not</em> universal (15–52% among erratic families), with (1,2) near
+    the top. Middle: screening ratio — also family-specific (44–93%), and (1,2) is the extreme: no family we
+    measured is as circle-mediated as the classical Ulam sequence. Right: window occupancy — the
+    <strong>one-third law</strong>: every signal-carrying family, whatever its λ, density, or entropy, occupies
+    0.3312 ± 0.0007 of its circle (reference line at ⅓). Hover any dot for the family's numbers.</figcaption>
+  </figure>
+</div>
+
+<div class="col">
+  <h2><span class="secno">7</span>Synthesis, conjectures, and what would settle them</h2>
+  <p>Assembling the pieces: the Ulam sequence behaves as a <strong>stochastic quasicrystal administered by a
+  thin boundary caste</strong>, and its deepest visible regularity — the one-third law — is shared by its
+  whole family. One rotation (λ) organizes everything organizable: it defines the window, the
+  phase-locked gap territories, and nearly all short-range memory (93.5% screening). What it does not
+  determine — which admissible slot is taken — behaves like a genuine diffusion (H ≈ 0.48, no second
+  frequency, ~1 bit/gap), and the interface between order and disorder is staffed by the outliers, whose
+  existence is forced by the window geometry (Lemma, §5) and whose census grows like n<sup>0.30</sup>.
+  We record the sharpest checkable forms of these observations:</p>
+  <p><strong>Conjecture 1 (sufficiency).</strong> I(g<sub>n</sub>; θ<sub>n</sub>) → c₁ ≈ 1.61 bits and
+  I(g<sub>n</sub>; g<sub>n−1</sub> | θ<sub>n</sub>) → c₂ ≤ 0.09 bits as N → ∞; c₂ > 0 (θ is close to, but
+  is not, a Markov state).</p>
+  <p><strong>Conjecture 2 (positive apparent entropy).</strong> The finite-order entropy rate
+  h<sub>k</sub> = H(g | g<sub>−1</sub>…g<sub>−k</sub>) converges to h<sub>∞</sub> ∈ (0.6, 1.0) bits/gap:
+  no finite-memory model, on gaps or on the circle, is exact.</p>
+  <p><strong>Conjecture 3 (diffusive occupancy).</strong> Var(a<sub>n</sub> − n/d) ~ D·n with
+  D ≈ 0.3 Var(g): the Ulam sequence has unbounded remainder and is not a Meyer set, despite its pure-point-
+  looking spectral comb.</p>
+  <p><strong>Conjecture 4 (oligarchy).</strong> The number of outliers among the first n terms is
+  Θ(n<sup>γ</sup>) with γ ≈ 0.30; the share of parent slots filled by the all-time top ten generators tends
+  to ½; and every sufficiently late element's unique representation contains exactly one outlier.</p>
+  <p><strong>Conjecture 5 (the one-third law).</strong> For every starting pair (u,v) whose Ulam sequence
+  is not regular or parity-degenerate, there is a frequency λ<sub>u,v</sub> and an interval window
+  W<sub>u,v</sub> ⊂ ℝ/2πℤ with |W<sub>u,v</sub>| = 2π/3 — the extremal measure for (W+W) ∩ W = ∅ —
+  such that all but O(n<sup>γ</sup>) of the first n elements satisfy λ<sub>u,v</sub>a mod 2π ∈ W<sub>u,v</sub>.</p>
+  <p>Two of these are within reach of current methods. Conjecture 1's residual c₂ would follow from — and its
+  precise value would quantify — a proof that the window profile of §3 is the marginal of an ergodic measure
+  for a circle-plus-noise transfer operator; the profile we publish is the empirical target such a proof must
+  hit. Conjecture 3 is testable at the 10¹²-scale of Gibbs–McCranie data with no new mathematics: bounded
+  remainder would force the flattening curve of Figure 5 to turn downward within two more decades. We would
+  regard either resolution as the natural next step toward Ulam's original question, since together they say
+  the density exists and fluctuates Gaussianly — something sixty years of exact methods have not produced.</p>
+
+  <h2><span class="secno">8</span>Limitations</h2>
+  <p>Everything here is finite-sample empiricism, offered with controls but without proofs: entropy
+  estimates use split-half bias correction and saturate under refinement, but plug-in estimators can hide
+  slowly-mixing structure; the diffusion exponent 0.95±0.03 drifts slightly downward with scale and only
+  larger computations can exclude a log-corrected sub-diffusion; boundary-sensitive counts (the “13 edge
+  births”) shift by ±2 under λ-precision at the 10⁻⁹ level, though every structural claim quoted is stable to
+  this; LZMA gives an upper bound on entropy rate, not a value; and the family battery runs at 4×10⁶,
+  two orders below the flagship dataset. The conjectures are phrased so that any of these caveats, if
+  material, would falsify them visibly.</p>
+
+  <h2><span class="secno">9</span>References</h2>
+  <ol class="refs">
+    <li id="ref-ulam">S. Ulam, <em>Problems in Modern Mathematics</em>, Wiley (1964); see also SIAM Rev. 6
+      (1964) 343–355.</li>
+    <li id="ref-stein">S. Steinerberger, “A Hidden Signal in the Ulam Sequence,”
+      <em>Experimental Mathematics</em> 26:4 (2017) 460–467. <a href="https://arxiv.org/abs/1507.00267">arXiv:1507.00267</a>.</li>
+    <li id="ref-ks">N. Kravitz and S. Steinerberger, “Ulam Sequences and Ulam Sets,”
+      <em>Integers</em> 18 (2018) #A80. <a href="https://arxiv.org/abs/1705.01883">arXiv:1705.01883</a>.</li>
+    <li id="ref-gibbs">P. Gibbs and J. McCranie, “The Ulam Numbers up to One Trillion” (2017),
+      <a href="https://vixra.org/abs/1711.0134">viXra:1711.0134</a>.</li>
+    <li id="ref-gibbs2">P. Gibbs, “An Efficient Method for Computing Ulam Numbers” (2015),
+      <a href="https://vixra.org/abs/1508.0085">viXra:1508.0085</a>.</li>
+    <li id="ref-knuth">D. E. Knuth, <em>ULAM-GIBBS</em>, literate program (2016–),
+      <a href="https://www-cs-faculty.stanford.edu/~knuth/programs/ulam-gibbs.w">cs-faculty.stanford.edu/~knuth/programs/ulam-gibbs.w</a>.</li>
+    <li id="ref-ss">J. Schmerl and E. Spiegel, “The Regularity of Some 1-Additive Sequences,”
+      <em>J. Combin. Theory Ser. A</em> 66 (1994) 172–175; J. Cassaigne and S. Finch, “A Class of
+      1-Additive Sequences and Quadratic Recurrences,” <em>Exp. Math.</em> 4 (1995) 49–60.</li>
+    <li id="ref-hkss">J. Hinman, B. Kuca, A. Schlesinger, A. Sheydvasser, “The Unreasonable Rigidity of Ulam
+      Sequences,” <em>J. Number Theory</em> 194 (2019) 409–425; and “Rigidity of Ulam Sets and Sequences,”
+      <em>Involve</em> 12:3 (2019) 521–539.</li>
+  </ol>
+  <p class="note" style="margin-top:40px;border-top:1px solid var(--grid);padding-top:18px">
+  <strong>Reproducibility.</strong> Generator (<code>src/ulam.c</code>, <code>src/ulam2.c</code>), analysis
+  scripts, and all derived data live in <code>~/ulam-research/</code>. The full pipeline is deterministic;
+  the shuffle control uses seed 0. Every figure on this page is drawn from the embedded measurement data —
+  view source for the numbers.</p>
+</div>
+<div class="tooltip" id="tt"></div>

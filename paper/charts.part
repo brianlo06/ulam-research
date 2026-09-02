@@ -1,0 +1,118 @@
+<script>
+const D = window.PAPER_DATA;
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const NS = "http://www.w3.org/2000/svg";
+const tt = document.getElementById('tt');
+function el(n, at, parent){ const e = document.createElementNS(NS, n);
+  for(const k in at) e.setAttribute(k, at[k]); if(parent) parent.appendChild(e); return e; }
+function txt(parent, x, y, s, at){ const e = el('text', Object.assign({x,y}, at||{}), parent);
+  e.textContent = s; return e; }
+function showTT(ev, html){ tt.innerHTML = html; tt.style.display='block';
+  const w = tt.offsetWidth, W = window.innerWidth;
+  tt.style.left = Math.min(ev.clientX+14, W-w-8)+'px'; tt.style.top = (ev.clientY+14)+'px'; }
+function hideTT(){ tt.style.display='none'; }
+function svgIn(id, w, h){ const host = document.getElementById(id);
+  const s = el('svg', {viewBox:`0 0 ${w} ${h}`, width:'100%', role:'img'}); host.appendChild(s); return s; }
+function niceTicks(lo, hi, n){ const span=(hi-lo)/n, mag=Math.pow(10,Math.floor(Math.log10(span)));
+  const step=[1,2,2.5,5,10].map(m=>m*mag).find(s=>(hi-lo)/s<=n)||mag*10;
+  const t=[]; for(let v=Math.ceil(lo/step)*step; v<=hi+1e-9; v+=step) t.push(+v.toPrecision(10)); return t; }
+const fmt = (v,d=2) => (+v).toLocaleString('en-US',{maximumFractionDigits:d});
+
+/* ---------- Figure 1: hero scatter ---------- */
+(function(){
+  const W=880, H=300, L=52, R=16, T=14, B=40;
+  const s = svgIn('fig1', W, H);
+  const x = n => L + (Math.log10(n)/Math.log10(D.N)) * (W-L-R);
+  const y = r => T + (1-r)*(H-T-B);
+  el('rect',{x:L,y:y(2/3),width:W-L-R,height:y(1/3)-y(2/3),fill:css('--band')},s);
+  [0,1/3,2/3,1].forEach(r=>{ el('line',{x1:L,x2:W-R,y1:y(r),y2:y(r),class: (r===0||r===1)?'axisline':'gridline'},s);
+    txt(s, L-8, y(r)+4, r===0?'0':(r===1?'1':(r===1/3?'1/3':'2/3')), {class:'tick','text-anchor':'end'}); });
+  [1,10,100,1e3,1e4,1e5,1e6].forEach(n=>{ if(n<=D.N){ el('line',{x1:x(n),x2:x(n),y1:H-B,y2:H-B+4,class:'axisline'},s);
+    txt(s, x(n), H-B+16, n>=1e6?'10⁶':(n>=1e5?'10⁵':(n>=1e4?'10⁴':(n>=1e3?'10³':''+n))), {class:'tick','text-anchor':'middle'}); }});
+  txt(s, (L+W-R)/2, H-4, 'term index n (log scale)', {class:'axl','text-anchor':'middle'});
+  txt(s, 14, (T+H-B)/2, 'ρ = λaₙ/2π mod 1', {class:'axl','text-anchor':'middle',
+      transform:`rotate(-90 14 ${(T+H-B)/2})`});
+  txt(s, W-R-6, y(0.5)+4, 'middle third', {class:'axl','text-anchor':'end', fill:css('--accent'), 'font-size':'10px'});
+  const h = D.hero, blue = css('--s1'), orange = css('--s2');
+  h.n.forEach((n,i)=>{ const c = el('circle',{cx:x(n+1),cy:y(h.rho[i]),r:1.7,fill:blue,opacity:.55},s); });
+  h.out_n.forEach((n,i)=>{
+    const c = el('circle',{cx:x(n+1),cy:y(h.out_rho[i]),r:2.6,fill:orange,stroke:css('--surface'),'stroke-width':1},s);
+    c.style.cursor='default';
+    c.addEventListener('mousemove',ev=>showTT(ev,`a = ${fmt(h.out_val[i],0)}<br>ρ = ${h.out_rho[i]}<br>outlier #${i+1}`));
+    c.addEventListener('mouseleave',hideTT);
+  });
+  // label the four exceptions (first four outliers by value 2,3,47,69)
+  const lbl = {2:'2',3:'3',47:'47',69:'69'};
+  h.out_n.forEach((n,i)=>{ const v=h.out_val[i]; if(lbl[v]){
+    txt(s, x(n+1)+6, y(h.out_rho[i])+4, lbl[v], {class:'dl', fill:orange}); }});
+})();
+
+/* ---------- Figure 2: window profile ---------- */
+(function(){
+  const W=880, H=260, L=52, R=16, T=12, B=38;
+  const s = svgIn('fig2', W, H);
+  const P = D.profile, ymax = Math.max(...P.y)*1.06;
+  const x = v => L + v*(W-L-R), y = v => T + (1-v/ymax)*(H-T-B);
+  el('rect',{x:x(1/3),y:T,width:x(2/3)-x(1/3),height:H-T-B,fill:css('--band')},s);
+  niceTicks(0,ymax,4).forEach(v=>{ el('line',{x1:L,x2:W-R,y1:y(v),y2:y(v),class:'gridline'},s);
+    txt(s,L-8,y(v)+4,fmt(v,1),{class:'tick','text-anchor':'end'}); });
+  [0,'⅓','⅔',1].forEach((t,i)=>{ const v=[0,1/3,2/3,1][i];
+    txt(s,x(v),H-B+16,typeof t==='string'?t:''+t,{class:'tick','text-anchor':'middle'}); });
+  el('line',{x1:L,x2:W-R,y1:H-B,y2:H-B,class:'axisline'},s);
+  let dth = `M ${x(P.x[0])} ${y(P.y[0])}`;
+  P.x.forEach((v,i)=>{ dth += ` L ${x(v)} ${y(P.y[i])}`; });
+  const area = dth + ` L ${x(P.x[P.x.length-1])} ${y(0)} L ${x(P.x[0])} ${y(0)} Z`;
+  el('path',{d:area, fill:css('--s1'), opacity:.16},s);
+  el('path',{d:dth, fill:'none', stroke:css('--s1'), 'stroke-width':2},s);
+  txt(s,(L+W-R)/2,H-4,'ρ = λa/2π mod 1',{class:'axl','text-anchor':'middle'});
+  txt(s,14,(T+H-B)/2,'density',{class:'axl','text-anchor':'middle',transform:`rotate(-90 14 ${(T+H-B)/2})`});
+  // hover crosshair
+  const guide = el('line',{y1:T,y2:H-B,stroke:css('--axis'),'stroke-width':1,'stroke-dasharray':'3 3',opacity:0},s);
+  const hot = el('rect',{x:L,y:T,width:W-L-R,height:H-T-B,fill:'transparent'},s);
+  hot.addEventListener('mousemove',ev=>{
+    const r = s.getBoundingClientRect(), mx=(ev.clientX-r.left)*W/r.width;
+    const v = Math.min(.999,Math.max(0,(mx-L)/(W-L-R)));
+    const i = Math.min(P.x.length-1, Math.floor(v*P.x.length));
+    guide.setAttribute('x1',x(P.x[i])); guide.setAttribute('x2',x(P.x[i])); guide.setAttribute('opacity',1);
+    showTT(ev,`ρ = ${P.x[i].toFixed(3)}<br>density = ${P.y[i].toFixed(2)}`);
+  });
+  hot.addEventListener('mouseleave',()=>{guide.setAttribute('opacity',0);hideTT();});
+})();
+
+/* ---------- Figure 3: heatmap ---------- */
+(function(){
+  const HT = D.heat, NB = HT.nb, G = HT.gaps.length;
+  const W=880, L=64, R=16, T=30, rowH=24, B=40, H=T+ (G+1)*rowH + B;
+  const s = svgIn('fig3', W, H);
+  const x = i => L + i*(W-L-R)/NB;
+  const ramp = t => { // sequential blue: interpolate seq100 -> seq700 via steps
+    const stops=[css('--seq100'),css('--seq250'),css('--seq400'),css('--seq550'),css('--seq700')];
+    const p=Math.max(0,Math.min(1,t))* (stops.length-1), i=Math.floor(p), f=p-i;
+    const c1=stops[i], c2=stops[Math.min(i+1,stops.length-1)];
+    const h2r=c=>[1,3,5].map(j=>parseInt(c.slice(j,j+2),16));
+    const a=h2r(c1),b=h2r(c2); return `rgb(${a.map((v,j)=>Math.round(v+(b[j]-v)*f)).join(',')})`; };
+  // occupancy strip
+  txt(s, L-8, T-14+11, 'occupancy', {class:'tick','text-anchor':'end'});
+  HT.occ.forEach((v,i)=>{ el('rect',{x:x(i),y:T-14,width:x(1)-x(0)+.5,height:10,fill:css('--muted'),opacity:.15+.85*v},s); });
+  const pmax = Math.max(...HT.p.flat());
+  HT.gaps.forEach((g0,r)=>{
+    const yy = T + 8 + r*rowH;
+    txt(s, L-8, yy+rowH/2+4, 'g='+g0, {class:'tick','text-anchor':'end'});
+    HT.p[r].forEach((p,i)=>{
+      const c = el('rect',{x:x(i),y:yy,width:x(1)-x(0)+.5,height:rowH-2,rx:1.5,
+        fill: p>0 ? ramp(p/pmax) : 'transparent'},s);
+      if(p>0){ c.addEventListener('mousemove',ev=>{
+          const rho=(HT.lo+(i+.5)*(HT.hi-HT.lo)/NB).toFixed(3);
+          showTT(ev,`gap ${g0} at ρ=${rho}<br>P(g|ρ) = ${(p*100).toFixed(1)}%`); });
+        c.addEventListener('mouseleave',hideTT); }
+    });
+  });
+  const axY = T+8+G*rowH+6;
+  el('line',{x1:L,x2:W-R,y1:axY,y2:axY,class:'axisline'},s);
+  [[.3333,'⅓'],[.4,'0.40'],[.5,'0.50'],[.6,'0.60'],[.6667,'⅔']].forEach(([v,t])=>{
+    const px = L + (v-HT.lo)/(HT.hi-HT.lo)*(W-L-R);
+    if(px>=L&&px<=W-R){ el('line',{x1:px,x2:px,y1:axY,y2:axY+4,class:'axisline'},s);
+      txt(s,px,axY+17,t,{class:'tick','text-anchor':'middle'}); }});
+  txt(s,(L+W-R)/2,H-6,'ρ = λa/2π mod 1',{class:'axl','text-anchor':'middle'});
+})();
+</script>
