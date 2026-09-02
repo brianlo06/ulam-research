@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
     S    = calloc(W, 8);
     one  = calloc(W, 8);
     many = calloc(W, 8);
-    rep  = calloc((size_t)L + 8, 4);
+    rep  = calloc((size_t)W * 64, 4);   /* bits can land in padding words past L */
     if (!S || !one || !many || !rep) { fprintf(stderr, "oom\n"); return 1; }
 
     long cap = 1 << 20, n = 0;
