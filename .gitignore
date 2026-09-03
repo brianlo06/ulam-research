@@ -7,3 +7,4 @@ data/*.log
 src/ulam
 src/ulam2
 .DS_Store
+src/ulam3
