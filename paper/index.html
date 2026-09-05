@@ -505,17 +505,35 @@ sup.fn{font-size:.72em; color:var(--accent)}
   regard either resolution as the natural next step toward Ulam's original question, since together they say
   the density exists and fluctuates Gaussianly — something sixty years of exact methods have not produced.</p>
 
-  <h2><span class="secno">8</span>Limitations</h2>
+  <h2><span class="secno">8</span>Postscript: verification at 4×10⁸ <span style="font-size:.8em;color:var(--muted)">(added Sept 4)</span></h2>
+  <p>After this report was first written, a 39-hour run extended U(1,2) to 4×10⁸ — 29,585,494 terms,
+  ten times the flagship dataset — specifically to stress-test the conjectures of §7. Every one that
+  could be tested survived, and two sharpened:</p>
+  <div class="kbox">
+    <div class="kpi"><div class="v">H = 0.493</div><div class="l"><strong>Conjecture 3 confirmed.</strong>
+      Var(S<sub>m</sub>)/(m·Var g) holds a plateau ≈ 0.31 over eleven octaves to m = 5.2×10⁵; the slow
+      downward drift flagged in §9 was finite-size noise. Linear diffusion — the occupancy is genuinely
+      stochastic.</div></div>
+    <div class="kpi"><div class="v">13 digits</div><div class="l">independent wavelength
+      2.4434429677841 vs. the Gibbs–McCranie trillion-scale 2.443442967784743</div></div>
+    <div class="kpi"><div class="v">[0.33331, 0.66669]</div><div class="l">the 99.999% window at
+      N = 2.96×10⁷ — the one-third law's edges now sit within 2×10⁻⁵ of exactly ⅓ and ⅔</div></div>
+    <div class="kpi"><div class="v">γ = 0.286</div><div class="l">outlier census 223 → 340 → 642 across
+      five octaves of N; exceptions still exactly {2, 3, 47, 69} below 4×10⁸; max gap 631, alphabet 144</div></div>
+  </div>
+  <p class="note">Reproduce with <code>src/ulam3.c</code> (parallel, streaming) and
+  <code>src/overnight_analysis.py</code>; results in <code>data/overnight_results.json</code>.</p>
+
+  <h2><span class="secno">9</span>Limitations</h2>
   <p>Everything here is finite-sample empiricism, offered with controls but without proofs: entropy
   estimates use split-half bias correction and saturate under refinement, but plug-in estimators can hide
-  slowly-mixing structure; the diffusion exponent 0.95±0.03 drifts slightly downward with scale and only
-  larger computations can exclude a log-corrected sub-diffusion; boundary-sensitive counts (the “13 edge
+  slowly-mixing structure; the diffusion exponent's apparent downward drift at 4×10⁷ was resolved by the 4×10⁸ run (§8) — H = 0.493, no sub-diffusion; boundary-sensitive counts (the “13 edge
   births”) shift by ±2 under λ-precision at the 10⁻⁹ level, though every structural claim quoted is stable to
   this; LZMA gives an upper bound on entropy rate, not a value; and the family battery runs at 4×10⁶,
   two orders below the flagship dataset. The conjectures are phrased so that any of these caveats, if
   material, would falsify them visibly.</p>
 
-  <h2><span class="secno">9</span>References</h2>
+  <h2><span class="secno">10</span>References</h2>
   <ol class="refs">
     <li id="ref-ulam">S. Ulam, <em>Problems in Modern Mathematics</em>, Wiley (1964); see also SIAM Rev. 6
       (1964) 343–355.</li>

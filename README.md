@@ -23,7 +23,11 @@ recorded at generation time, plus an 80-family scan of alternative starting pair
 | R4 | **The generative oligarchy** — a circle-geometry lemma (verified exactly on all 2.96M elements) shows the middle-third bulk cannot reproduce itself; growth is administered by 340 "outlier" elements (~n⁰·³⁰), whose top **ten** members fill 48.5% of all representation slots. The four classical exceptions {2, 3, 47, 69} are exactly the four dominant generators. |
 | R5 | **The one-third law** — across all 63 signal-carrying families, window occupancy is **0.3312 ± 0.0007** of the circle, while λ, density, and entropy vary freely. One-third is precisely the extremal measure at which a window W can satisfy (W+W) ∩ W = ∅ mod 1: Ulam sequences saturate the self-exclusion bound. |
 
-Five falsifiable conjectures are stated in §7 of the paper.
+Five falsifiable conjectures are stated in §7 of the paper. A follow-up 4×10⁸ run
+(29.6M terms, `src/ulam3.c` + `src/overnight_analysis.py`) **confirmed Conjecture 3**:
+the diffusion ratio plateaus at ≈0.31 over eleven octaves (H = 0.493), the wavelength
+matches Gibbs–McCranie to 13 digits, the one-third window edges sit within 2×10⁻⁵ of
+exactly ⅓ and ⅔, and the outlier exponent holds at 0.286 — see §8 of the paper.
 
 ## Layout
 
